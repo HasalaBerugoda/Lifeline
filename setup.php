@@ -13,17 +13,19 @@ echo "</head><body><div class='container my-5'><h1 class='mb-4 text-danger'>Life
 
 try {
     // 1. Connect to MySQL (without selecting database to allow creating it)
-    $host = '127.0.0.1';
-    $user = 'root';
-    $pass = '';
+    $host = $_ENV['DB_HOST'] ?? '127.0.0.1';
+    $user = $_ENV['DB_USERNAME'] ?? 'root';
+    $pass = $_ENV['DB_PASSWORD'] ?? '';
+    $dbname = $_ENV['DB_DATABASE'] ?? 'blood_bank_test';
+    
     $pdo = new PDO("mysql:host=$host", $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
 
     // 2. Create database
-    $pdo->exec("CREATE DATABASE IF NOT EXISTS blood_bank_test");
-    $pdo->exec("USE blood_bank_test");
-    echo "<div class='alert alert-success'>Database 'blood_bank_test' created or verified.</div>";
+    $pdo->exec("CREATE DATABASE IF NOT EXISTS " . $dbname);
+    $pdo->exec("USE " . $dbname);
+    echo "<div class='alert alert-success'>Database '" . htmlspecialchars($dbname) . "' created or verified.</div>";
 
     // 3. Create tables
     $queries = [
